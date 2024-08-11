@@ -5,6 +5,7 @@ from esphome.const import (
     STATE_CLASS_MEASUREMENT,
     UNIT_CELSIUS,
     UNIT_WATT,
+    CONF_SUPPORTED_MODES,
 )
 import esphome.codegen as cg
 import esphome.config_validation as cv
@@ -51,6 +52,15 @@ HORIZONTAL_SWING_OPTIONS = [
     "right",
 ]
 
+CLIMATE_MODES_OPTIONS = {
+    "HEAT_COOL": ClimateMode.CLIMATE_MODE_HEAT_COOL,
+    "COOL": ClimateMode.CLIMATE_MODE_COOL,
+    "HEAT": ClimateMode.CLIMATE_MODE_HEAT,
+    "DRY": ClimateMode.CLIMATE_MODE_DRY,
+    "FAN_ONLY": ClimateMode.CLIMATE_MODE_FAN_ONLY,
+}
+
+validate_modes = cv.enum(CLIMATE_MODES_OPTIONS, upper=True)
 
 VERTICAL_SWING_OPTIONS = ["swing", "auto", "up", "up_center", "center", "down_center", "down"]
 
@@ -94,7 +104,8 @@ CONFIG_SCHEMA = cv.typed_schema(
                   accuracy_decimals=0,
                   device_class=DEVICE_CLASS_POWER,
                   state_class=STATE_CLASS_MEASUREMENT,
-              ),
+                  ),
+                cv.Optional(CONF_SUPPORTED_MODES): cv.ensure_list(validate_modes),
             }
         ),
     }
@@ -138,3 +149,6 @@ async def to_code(config):
     if CONF_CURRENT_POWER_CONSUMPTION in config:
         sens = await sensor.new_sensor(config[CONF_CURRENT_POWER_CONSUMPTION])
         cg.add(var.set_current_power_consumption_sensor(sens))
+    
+    if CONF_SUPPORTED_MODES in config:
+        cg.add(var.set_supported_modes(config[CONF_SUPPORTED_MODES]))
