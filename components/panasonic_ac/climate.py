@@ -10,6 +10,9 @@ from esphome.const import (
 import esphome.codegen as cg
 import esphome.config_validation as cv
 from esphome.components import uart, climate, sensor, select, switch
+from esphome.components.climate import (
+    ClimateMode,
+)
 
 AUTO_LOAD = ["switch", "sensor", "select"]
 DEPENDENCIES = ["uart"]
