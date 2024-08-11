@@ -42,7 +42,9 @@ class PanasonicAC : public Component, public uart::UARTDevice, public climate::C
   void set_current_power_consumption_sensor(sensor::Sensor *current_power_consumption_sensor);
 
   void set_current_temperature_sensor(sensor::Sensor *current_temperature_sensor);
-
+  
+  void set_supported_modes(const std::set<ClimateMode> &modes) { this->supported_modes_ = modes; }
+  
   void setup() override;
   void loop() override;
 
@@ -78,6 +80,7 @@ class PanasonicAC : public Component, public uart::UARTDevice, public climate::C
   uint32_t last_packet_received_;  // Stores the time at which the last packet was received
 
   climate::ClimateTraits traits() override;
+  std::set<ClimateMode> supported_modes_{};
 
   void read_data();
 
